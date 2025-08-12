@@ -1,0 +1,14 @@
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ['3.10']
+    - name: Install dependencies
+      run: pip install pyspark pydeequ
+    - name: Run data quality checks
+      run: |
+        export SPARK_VERSION=3.3
+        python dq.py
