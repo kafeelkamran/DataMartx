@@ -9,7 +9,7 @@ new_data = pd.read_parquet("sales_today.parquet")
 # KS test
 stat, p_value = ks_2samp(baseline['sales_amount'], new_data['sales_amount'])
 drift_detected = p_value < 0.05
-
+#eafdsdfdf adf
 # Store results in Delta (Databricks example)
 from delta import DeltaTable
 from pyspark.sql import SparkSession
