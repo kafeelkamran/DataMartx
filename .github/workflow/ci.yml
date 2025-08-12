@@ -2,9 +2,9 @@ name: python deequ
  
 on:
   push:
-    branches: [master]
+    branches: [newBranch]
   pull_request:
-    branches: [master]
+    branches: [newBranch]
  
 jobs:
   quality-check:
