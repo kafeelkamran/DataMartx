@@ -1,14 +1,37 @@
+name: python deequ
+ 
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+ 
 jobs:
   quality-check:
     runs-on: ubuntu-latest
+ 
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
-      with:
-        python-version: ['3.10']
-    - name: Install dependencies
-      run: pip install pyspark pydeequ
-    - name: Run data quality checks
-      run: |
-        export SPARK_VERSION=3.3
-        python dq.py
+      - uses: actions/checkout@v3
+ 
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+ 
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+ 
+      - name: Install Python dependencies
+        run: pip install pyspark==3.3.1 pydeequ
+ 
+      - name: Download Deequ and Scala jars
+        run: |
+          mkdir -p jars
+          curl -L -o jars/deequ-2.0.5-spark-3.3.jar https://repo1.maven.org/maven2/com/amazon/deequ/deequ/2.0.5-spark-3.3/deequ-2.0.5-spark-3.3.jar
+          curl -L -o jars/scala-library-2.12.15.jar https://repo1.maven.org/maven2/org/scala-lang/scala-library/2.12.15/scala-library-2.12.15.jar
+ 
+      - name: Run data quality checks
+        env:
+          SPARK_VERSION: '3.3'
+        run: python dq.py
