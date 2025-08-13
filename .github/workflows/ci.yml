@@ -1,8 +1,8 @@
 on:
   push:
-    branches: [master]
+    branches: [newBranch]
   pull_request:
-    branches: [master]
+    branches: [newBranch]
  
 jobs:
   databricks-quality-check:
