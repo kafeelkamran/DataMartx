@@ -1,9 +1,9 @@
+name: Quality chk
+ 
 on:
-  push:
-    branches: [newBranch]
   pull_request:
-    branches: [newBranch]
-
+  workflow_dispatch:
+ 
 jobs:
   databricks-quality-check:
     runs-on: ubuntu-latest
@@ -20,9 +20,26 @@ jobs:
           workspace-notebook-path: /Workspace/Users/traininguser4@sudosu.ai/dq
           existing-cluster-id: ${{ secrets.DATABRICKS_CLUSTER_ID }}
  
-      - name: Download Deequ Report (if failed)
+      - name: Download and Print Deequ Report
+        if: always()
+        run: |
+          pip install databricks-cli jq
+          databricks configure --token <<EOF
+          ${{ secrets.DATABRICKS_HOST }}
+          ${{ secrets.DATABRICKS_TOKEN }}
+          EOF
+          databricks fs cp dbfs:/FileStore/shared_uploads/traininguser4@sudosu.ai/deequ_result.json ./deequ_result.json
+          echo "------ Deequ Output from Databricks ------"
+          cat deequ_result.json
+          echo "-------------------------------------------"
+          STATUS=$(jq -r '.result[0].check_status' deequ_result.json)
+          if [ "$STATUS" != "Success" ]; then
+            echo " Deequ checks failed"
+            exit 1
+          fi
+          echo " Deequ checks passed"
+ 
+      - name: Deequ Failure Message
         if: failure()
         run: |
-          # Optionally fetch report from DBFS to attach as artifact using databricks' CLI or REST API
           echo "Deequ failed — see DBFS report"
- 
