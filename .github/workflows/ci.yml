@@ -28,7 +28,7 @@ jobs:
           ${{ secrets.DATABRICKS_HOST }}
           ${{ secrets.DATABRICKS_TOKEN }}
           EOF
-          databricks fs cp dbfs:/FileStore/shared_uploads/traininguser4@sudosu.ai/deequ_result.json ./deequ_result.json
+          databricks fs cp dbfs:/FileStore/shared_uploads/traininguser4@sudosu.ai/result.json./result.json
           echo "------ Deequ Output from Databricks ------"
           cat deequ_result.json
           echo "-------------------------------------------"
